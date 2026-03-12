@@ -1,0 +1,104 @@
+sudo apt update
+sudo apt install mysql-server -y
+sudo apt install mysql-client -y
+sudo systemctl status mysql
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+az login 
+
+
+CREATE DATABASE company;
+USE company;
+CREATE TABLE user_finance (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    address VARCHAR(255),
+    credit_card_no VARCHAR(20),
+    city VARCHAR(50),
+    state VARCHAR(50)
+);
+INSERT INTO user_finance (username, address, credit_card_no, city, state) VALUES
+('rahul_k', 'Flat 12, MG Road', '4539123412341234', 'Bengaluru', 'Karnataka'),
+('priya_s', 'B-304, Andheri East', '5123456789012345', 'Mumbai', 'Maharashtra'),
+('amit_p', 'House No 45, Sector 22', '4111222233334444', 'Chandigarh', 'Chandigarh'),
+('neha_r', 'Near Park Street', '6011456789012345', 'Kolkata', 'West Bengal'),
+('vikram_j', 'Plot 78, Banjara Hills', '3530111333300000', 'Hyderabad', 'Telangana'),
+('anita_m', 'Lane 3, Koregaon Park', '5425233434343434', 'Pune', 'Maharashtra'),
+('suresh_t', 'No 9, Anna Nagar', '4024007134567890', 'Chennai', 'Tamil Nadu'),
+('pooja_n', 'Block C, Sector 62', '4916123456789012', 'Noida', 'Uttar Pradesh');
+
+
+
+
+
+INSERT INTO user_finance (username, address, credit_card_no, city, state) VALUES
+('deepak_v', 'Street 5, Indiranagar', '4556123498765432', 'Bengaluru', 'Karnataka'),
+('kavita_l', 'Sector 15, HUDA', '5105105105105100', 'Gurugram', 'Haryana'),
+('rohit_c', 'Ring Road, Ashram', '4012888888881881', 'Delhi', 'Delhi');
+
+
+
+
+INSERT INTO user_finance (username, address, credit_card_no, city, state) VALUES
+('sunita_p', 'Civil Lines Area', '4222222222222', 'Jaipur', 'Rajasthan'),
+('manoj_s', 'Station Road', '5555555555554444', 'Bhopal', 'Madhya Pradesh'),
+('nisha_d', 'Alkapuri Main Road', '4716108999716531', 'Vadodara', 'Gujarat');
+
+
+
+
+
+
+sudo mysql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'StrongPassword123!';
+FLUSH PRIVILEGES;
+
+az storage container create \
+--account-name mysqlbackupstorage123 \
+--name mysql-backups
+
+
+az storage account keys list \
+--account-name mysqlbackupstorage123 \
+--resource-group myRG
+
+
+#!/bin/bash
+
+# Date for unique backup name
+DATE=$(date +%F-%H-%M)
+
+# MySQL details
+DB_USER="root"
+DB_PASS="password"
+DB_NAME="testdb"
+
+# Backup file location
+BACKUP_FILE="/tmp/mysql_backup_$DATE.sql"
+
+# Azure Storage details
+STORAGE_ACCOUNT="mysqlbackupstorage123"
+CONTAINER_NAME="mysql-backups"
+ACCOUNT_KEY="PASTE_STORAGE_ACCOUNT_KEY"
+
+# Step 1: Create MySQL backup
+mysqldump -u $DB_USER -p$DB_PASS $DB_NAME > $BACKUP_FILE
+
+# Step 2: Upload backup to Azure Storage
+az storage blob upload \
+--account-name $STORAGE_ACCOUNT \
+--account-key $ACCOUNT_KEY \
+--container-name $CONTAINER_NAME \
+--name mysql_backup_$DATE.sql \
+--file $BACKUP_FILE \
+--overwrite
+
+# Step 3: Remove local backup
+rm $BACKUP_FILE
+
+echo "Backup completed at $DATE"
+
+run the bash script
+
+wget <storage-file-url> on another vm
+mysql -u root company < <dump>.sql
