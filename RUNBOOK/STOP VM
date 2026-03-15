@@ -1,0 +1,13 @@
+# Login using Managed Identity
+Disable-AzContextAutosave -Scope Process
+Connect-AzAccount -Identity
+
+# Variables
+$resourceGroup = "your-resource-group"
+$vmName = "your-vm-name"
+
+Write-Output "Stopping VM: $vmName"
+
+Stop-AzVM -ResourceGroupName $resourceGroup -Name $vmName -Force
+
+Write-Output "VM stopped successfully"
