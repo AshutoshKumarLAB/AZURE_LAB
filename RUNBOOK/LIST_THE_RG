@@ -1,0 +1,11 @@
+# Login using Managed Identity
+Connect-AzAccount -Identity
+
+# Get all Resource Groups
+$rgs = Get-AzResourceGroup
+
+Write-Output "List of Resource Groups:"
+
+foreach ($rg in $rgs) {
+    Write-Output $rg.ResourceGroupName
+}
