@@ -1,0 +1,18 @@
+sudo apt install mysql-client-core-8.0    
+sudo apt update
+sudo apt install python3-pip -y
+sudo apt install python3-venv -y
+python3 -m venv myenv
+source myenv/bin/activate
+pip install flask mysql-connector-python
+
+create the application.py and edit the connector
+
+CREATE DATABASE company;
+USE company;
+CREATE TABLE employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    designation VARCHAR(100),
+    location VARCHAR(100)
+);
